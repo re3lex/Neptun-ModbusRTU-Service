@@ -1,19 +1,31 @@
 const dotenv = require('dotenv');
-const result = dotenv.config()
+const path = require('path');
+const fastifyCls = require('fastify');
+const { setupRoutes } = require('./app/routes/routes');
+
+const result = dotenv.config();
 
 if (result.error) {
-  throw result.error
+	throw result.error;
 }
 
-const {
-  NEPTUN_IP: neptunIp,
-  NEPTUN_ID: neptunId,
-} = process.env;
+const fastify = fastifyCls({ logger: true });
 
-const App = require('./app/app');
+setupRoutes(fastify);
 
-const app = new App({
-  neptunIp,
-  neptunId,
+fastify.register(require('fastify-static'), {
+	root: path.join(__dirname, 'dist'),
+
+	// prefix: '/public/', // optional: default '/'
 });
-app.start();
+
+const start = async () => {
+	try {
+		await fastify.listen(3000);
+	} catch (err) {
+		fastify.log.error(err);
+		process.exit(1);
+	}
+};
+
+start();
