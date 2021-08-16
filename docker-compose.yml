@@ -1,0 +1,11 @@
+version: "3.7"
+
+services:
+  tion-client:
+    build: ./
+    container_name: neptun-service
+    restart: always
+    ports:
+      - "7700:3000"
+    command:
+      "npm run start"
