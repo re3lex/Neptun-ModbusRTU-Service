@@ -1,5 +1,25 @@
-# Stage 1 - the build process
-FROM node:14  as build
+# Stage 1 - the build VueJS app
+FROM node:14  as build_vuejs
+
+# Create app directory
+WORKDIR /usr/src/app
+
+# Install app dependencies
+# A wildcard is used to ensure both package.json AND package-lock.json are copied
+# where available (npm@5+)
+COPY ./package*.json ./
+
+RUN npm ci --quiet
+
+# Bundle app source
+COPY ./ .
+
+RUN npm run build
+
+
+
+# Stage 2 - setup node_modules
+FROM node:14 as setup_node_modules
 
 # Create app directory
 WORKDIR /usr/src/app
@@ -10,19 +30,15 @@ WORKDIR /usr/src/app
 COPY ./package*.json ./
 
 # RUN apk add --no-cache git
-RUN npm install -g @vue/cli
 RUN npm ci --quiet --only=production
 
 # Bundle app source
 COPY ./ .
 
-RUN npm run build
 
 
 
-
-
-#Stage 2 - server setup
+#Stage 3 - server setup
 FROM node:14
 
 # Create app directory
@@ -30,7 +46,8 @@ WORKDIR /usr/src/app
 ENV NODE_ENV=production
 
 
-COPY --from=build /usr/src/app /usr/src/app
+COPY --from=build_vuejs /usr/src/app/dist /usr/src/app/dist
+COPY --from=setup_node_modules /usr/src/app /usr/src/app
 
 EXPOSE 3000
 
