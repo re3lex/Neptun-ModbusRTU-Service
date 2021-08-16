@@ -1,24 +1,4 @@
-# Stage 1 - the build VueJS app
-FROM node:14  as build_vuejs
-
-# Create app directory
-WORKDIR /usr/src/app
-
-# Install app dependencies
-# A wildcard is used to ensure both package.json AND package-lock.json are copied
-# where available (npm@5+)
-COPY ./package*.json ./
-
-RUN npm ci --quiet
-
-# Bundle app source
-COPY ./ .
-
-RUN npm run build
-
-
-
-# Stage 2 - setup node_modules
+# Stage 1 - setup node_modules
 FROM node:14 as setup_node_modules
 
 # Create app directory
@@ -36,10 +16,30 @@ RUN npm ci --quiet --only=production
 COPY ./ .
 
 
+# Stage 2 - the build VueJS app
+FROM node:14  as build_vuejs
+
+# Create app directory
+WORKDIR /usr/src/app
+
+# Install app dependencies
+# A wildcard is used to ensure both package.json AND package-lock.json are copied
+# where available (npm@5+)
+COPY ./package*.json ./
+
+COPY --from=setup_node_modules /usr/src/app /usr/src/app
+
+RUN npm ci --quiet
+
+# Bundle app source
+COPY ./ .
+
+RUN npm run build
+
 
 
 #Stage 3 - server setup
-FROM node:14
+FROM node:14-alpine
 
 # Create app directory
 WORKDIR /usr/src/app
