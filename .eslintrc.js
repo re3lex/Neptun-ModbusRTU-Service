@@ -44,6 +44,8 @@ module.exports = {
 		'class-methods-use-this': 'off',
 		'radix': 'off',
 		'no-tabs': 'off',
+		'max-len': ['warn', { "code": 130 }],
+		'vue/no-v-model-argument': 'off',
 		'vue/html-self-closing': [
 			'error',
 			{
