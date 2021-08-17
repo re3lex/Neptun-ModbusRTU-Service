@@ -10,7 +10,7 @@ WORKDIR /usr/src/app
 COPY ./package*.json ./
 
 # RUN apk add --no-cache git
-RUN npm ci --quiet --only=production
+RUN npm i --quiet --only=production
 
 # Bundle app source
 COPY ./ .
@@ -29,7 +29,7 @@ COPY ./package*.json ./
 
 COPY --from=setup_node_modules /usr/src/app /usr/src/app
 
-RUN npm ci --quiet
+RUN npm i --quiet
 
 # Bundle app source
 COPY ./ .
