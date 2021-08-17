@@ -20,10 +20,6 @@ export default {
 		};
 	},
 	methods: {
-		onSubmit() {
-			console.log('submit!');
-		},
-
 		renderFormItem({ label, content = [] }) {
 			return h(
 				resolveComponent('ElFormItem'),
