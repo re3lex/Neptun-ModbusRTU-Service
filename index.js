@@ -11,6 +11,11 @@ if (result.error) {
 
 const fastify = fastifyCls({ logger: true });
 
+fastify.addHook('onSend', async (request, reply, payload) => {
+	reply.header('Access-Control-Allow-Origin', '*');
+	return payload;
+});
+
 setupRoutes(fastify);
 
 fastify.register(require('fastify-static'), {

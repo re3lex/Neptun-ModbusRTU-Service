@@ -12,6 +12,9 @@ import {
 	ElOption,
 	ElInputNumber,
 	ElSwitch,
+	ElCollapse,
+	ElCollapseItem,
+
 } from 'element-plus';
 
 import App from './App.vue';
@@ -32,6 +35,8 @@ const components = [
 	ElOption,
 	ElInputNumber,
 	ElSwitch,
+	ElCollapse,
+	ElCollapseItem,
 ];
 
 const app = createApp(App);
@@ -42,4 +47,6 @@ components.forEach((component) => {
 
 app.use(store);
 app.use(router);
+
+// app.config.globalProperties.$store = store;
 app.mount('#app');

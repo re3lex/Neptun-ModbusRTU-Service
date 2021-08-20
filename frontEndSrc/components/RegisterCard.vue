@@ -144,54 +144,7 @@ export default {
 									modelValue: this.form,
 								},
 								{
-									default: () => {
-										const renderedFields = this.renderFields();
-										return renderedFields;
-
-										/* [
-										this.renderFormItem('Activity name',
-											h(
-												resolveComponent('ElInputNumber'),
-												{
-													modelValue: this.form.value,
-													'onUpdate:modelValue': (value) => {
-														console.log(value);
-														this.$emit('update:modelValue', value);
-													},
-												},
-											)),
-										this.renderFormItem('Some Number',
-											h(
-												resolveComponent('ElInputNumber'),
-												{
-													modelValue: this.data.value1,
-													'onUpdate:modelValue': (value1) => {
-														this.$emit('update:data', Object.assign(data, { value1 }));
-													},
-												},
-											)),
-										this.renderFormItem(
-											'Activity zone',
-											this.renderSelect({
-												placeholder: 'please select your zone',
-												modelValue: this.data.region1,
-												onUpdate: (region1) => {
-													this.$emit('update:data', Object.assign(data, { region1 }));
-												},
-												options: [{ label: 'Zone 1', value: 'z1' }, { label: 'Zone 2', value: 'z2' }],
-											}),
-										),
-										this.renderFormItem(
-											'Test boolean',
-											this.renderSwitch({
-												modelValue: this.data.boolean1,
-												onUpdate: (boolean1) => {
-													this.$emit('update:data', Object.assign(data, { boolean1 }));
-												},
-											}),
-										),
-									] */
-									},
+									default: () => this.renderFields(),
 								},
 							);
 							return content;

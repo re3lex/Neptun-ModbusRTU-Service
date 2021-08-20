@@ -6,7 +6,7 @@ module.exports = {
 	},
 	extends: [
 		'eslint:recommended',
-		'plugin:vue/strongly-recommended',
+		'plugin:vue/vue3-strongly-recommended',
 		'@vue/airbnb',
 	],
 	rules: {

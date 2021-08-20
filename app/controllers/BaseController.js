@@ -5,6 +5,8 @@ class BaseController {
 		const data = await this.getData(request, reply);
 
 		const execTime = new Date().valueOf() - start;
+
+		// reply.header('Access-Control-Allow-Origin', '*');
 		return { execTime, data };
 	}
 
