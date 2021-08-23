@@ -16,6 +16,10 @@ fastify.addHook('onSend', async (request, reply, payload) => {
 	return payload;
 });
 
+fastify.setNotFoundHandler(async (request, reply) => {
+	reply.redirect(303, '/');
+});
+
 setupRoutes(fastify);
 
 fastify.register(require('fastify-static'), {

@@ -7,9 +7,10 @@
 				</template>
 				<div class="registers">
 					<RegisterCard
-						v-for="(reg, index) in commonConfigRegs"
+						v-for="(reg, index) in moduleConfigRegisters"
 						:key="reg.name"
-						v-model:reg="commonConfigRegs[index]"
+						v-model:reg="moduleConfigRegisters[index]"
+						:class="{'updated': reg.updated}"
 					/>
 				</div>
 			</ElCollapseItem>
@@ -22,6 +23,7 @@
 						v-for="(reg, index) in wirelessSensorConfigRegs"
 						:key="reg.name"
 						v-model:reg="wirelessSensorConfigRegs[index]"
+						:class="{'updated': reg.updated}"
 					/>
 				</div>
 			</ElCollapseItem>
@@ -34,6 +36,7 @@
 						v-for="(reg, index) in wirelessSensorStatusRegs"
 						:key="reg.name"
 						v-model:reg="wirelessSensorStatusRegs[index]"
+						:class="{'updated': reg.updated}"
 					/>
 				</div>
 			</ElCollapseItem>
@@ -46,6 +49,7 @@
 						v-for="(reg, index) in countersRegs"
 						:key="reg.name"
 						v-model:reg="countersRegs[index]"
+						:class="{'updated': reg.updated}"
 					/>
 				</div>
 			</ElCollapseItem>
@@ -58,6 +62,7 @@
 						v-for="(reg, index) in counterConfigsRegs"
 						:key="reg.name"
 						v-model:reg="counterConfigsRegs[index]"
+						:class="{'updated': reg.updated}"
 					/>
 				</div>
 			</ElCollapseItem>
@@ -66,36 +71,74 @@
 </template>
 <script>
 import { mapState } from 'vuex';
+import {
+
+	ElCollapse,
+	ElCollapseItem,
+
+} from 'element-plus';
 import RegisterCard from '@/components/RegisterCard.vue';
 
 export default {
 	components: {
 		RegisterCard,
+		ElCollapse,
+		ElCollapseItem,
 	},
 
 	computed: {
 		...mapState({
-			// registers: (state) => state.registers,
-			commonConfigRegs: (state) => state.registers.filter((r) => r.startReg < 7),
-			wirelessSensorConfigRegs: (state) => state.registers.filter((r) => r.startReg >= 7 && r.startReg < 57)
-				.filter((r) => r.data.wirelessSensorEventAffectedGroup > 0),
-			wirelessSensorStatusRegs: (state) => state.registers.filter((r) => r.startReg >= 57 && r.startReg < 107)
-				.filter((r) => r.data.batLevel > 0 || r.data.link > 0),
-			countersRegs: (state) => state.registers.filter((r) => r.startReg >= 107 && r.startReg < 123),
-			counterConfigsRegs: (state) => state.registers.filter((r) => r.startReg >= 123),
+			moduleConfigRegisters: (state) => state.moduleConfigRegisters,
+			wirelessSensorConfigRegs: (state) => state.wirelessSensorConfigRegs,
+			wirelessSensorStatusRegs: (state) => state.wirelessSensorStatusRegs,
+			countersRegs: (state) => state.countersRegs,
+			counterConfigsRegs: (state) => state.counterConfigsRegs,
 		}),
 	},
 
 	watch: {
-		counterConfigsRegs: {
-			handler(val, oldVal = []) {
+		moduleConfigRegisters: {
+			handler(data, oldVal = []) {
 				if (oldVal.length > 0) {
-					console.table(val.map((a) => a.data));
+					this.$store.dispatch('updateRegisters', { field: 'moduleConfigRegisters', data });
+				}
+			},
+			deep: true,
+		},
+		wirelessSensorConfigRegs: {
+			handler(data, oldVal = []) {
+				if (oldVal.length > 0) {
+					this.$store.dispatch('updateRegisters', { field: 'wirelessSensorConfigRegs', data });
+				}
+			},
+			deep: true,
+		},
+		wirelessSensorStatusRegs: {
+			handler(data, oldVal = []) {
+				if (oldVal.length > 0) {
+					this.$store.dispatch('updateRegisters', { field: 'wirelessSensorStatusRegs', data });
+				}
+			},
+			deep: true,
+		},
+		countersRegs: {
+			handler(data, oldVal = []) {
+				if (oldVal.length > 0) {
+					this.$store.dispatch('updateRegisters', { field: 'countersRegs', data });
+				}
+			},
+			deep: true,
+		},
+		counterConfigsRegs: {
+			handler(data, oldVal = []) {
+				if (oldVal.length > 0) {
+					this.$store.dispatch('updateRegisters', { field: 'counterConfigsRegs', data });
 				}
 			},
 			deep: true,
 		},
 	},
+
 	mounted() {
 		this.$store.dispatch('getRegisters');
 	},
@@ -109,10 +152,17 @@ export default {
 
 	.registerCard {
 		padding: 3px;
-		.el-card__body {
-			max-height: 500px;
-    overflow-y: auto;
-		}
+			&.updated {
+				.el-card{
+					box-shadow: rgb(253 0 0 / 30%) 0px 2px 12px 0px;
+				}
+			}
+
+			.el-card__body {
+				max-height: 500px;
+				overflow-y: auto;
+			}
+
 	}
 }
 }

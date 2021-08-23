@@ -1,5 +1,15 @@
 <script>
-import { h, resolveComponent } from 'vue';
+import { h } from 'vue';
+
+import {
+	ElCard,
+	ElForm,
+	ElFormItem,
+	ElSelect,
+	ElOption,
+	ElInputNumber,
+	ElSwitch,
+} from 'element-plus';
 
 export default {
 	props: {
@@ -11,18 +21,20 @@ export default {
 	},
 	emits: ['update:reg'],
 
-	data() {
-		return {
-			form: {
-				value: 123,
-				region: '',
-			},
-		};
+	components: {
+		ElCard,
+		ElForm,
+		ElFormItem,
+		ElSelect,
+		ElOption,
+		ElInputNumber,
+		ElSwitch,
 	},
+
 	methods: {
 		renderFormItem({ label, content = [] }) {
 			return h(
-				resolveComponent('ElFormItem'),
+				ElFormItem,
 				{ label },
 				{
 					default: () => (Array.isArray(content) ? content : [content]),
@@ -34,21 +46,21 @@ export default {
 			modelValue, onUpdate, options = [], attrs = {},
 		}) {
 			return h(
-				resolveComponent('ElSelect'),
+				ElSelect,
 				{
 					modelValue,
 					'onUpdate:modelValue': onUpdate,
 					...attrs,
 				},
 				{
-					default: () => options.map(({ value, label }) => h(resolveComponent('ElOption'), { label, value })),
+					default: () => options.map(({ value, label }) => h(ElOption, { label, value })),
 				},
 			);
 		},
 
 		renderSwitch({ modelValue, onUpdate, attrs = {} }) {
 			return h(
-				resolveComponent('ElSwitch'),
+				ElSwitch,
 				{
 					modelValue,
 					'onUpdate:modelValue': onUpdate,
@@ -65,11 +77,11 @@ export default {
 
 			Object.keys(fields).forEach((fName) => {
 				const {
-					type, description, options: rawOptions = {}, writable,
+					type, description, options: rawOptions = {}, writable, min = 0, max = Infinity, precision,
 				} = fields[fName];
 
 				const onUpdate = (val) => {
-					reg.data[fName] = val;
+					reg.data[fName] = !precision ? val : val * 10 ** precision;
 					this.$emit('update:reg', reg);
 				};
 				const modelValue = data[fName];
@@ -82,17 +94,27 @@ export default {
 					});
 				} else if (type === 'int') {
 					content = h(
-						resolveComponent('ElInputNumber'),
+						ElInputNumber,
 						{
-							modelValue,
+							modelValue: !precision ? modelValue : modelValue / 10 ** precision,
 							'onUpdate:modelValue': onUpdate,
 							disabled: writable !== true,
+							controlsPosition: 'right',
+							min,
+							max,
+							precision,
 						},
 					);
 				} else if (type === 'list') {
-					const options = Object.keys(rawOptions).map((oName) => ({ value: oName, label: rawOptions[oName] }));
+					const options = Object.keys(rawOptions).map((oName) => {
+						let value = oName;
+						if (/^\d+$/.test(value)) {
+							value = parseInt(value);
+						}
+						return { value, label: rawOptions[oName] };
+					});
 					content = this.renderSelect({
-						modelValue: `${modelValue}`,
+						modelValue,
 						onUpdate,
 						options,
 						attrs: { disabled: writable !== true },
@@ -121,7 +143,7 @@ export default {
 			},
 			[
 				h(
-					resolveComponent('ElCard'),
+					ElCard,
 					{ class: 'box-card' },
 					{
 						// render card header
@@ -137,11 +159,12 @@ export default {
 						// render card content
 						default: (props) => {
 							const content = h(
-								resolveComponent('ElForm'),
+								ElForm,
 								{
 									ref: 'form',
 									'label-width': '200px',
-									modelValue: this.form,
+
+									// modelValue: this.form,
 								},
 								{
 									default: () => this.renderFields(),
