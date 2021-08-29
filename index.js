@@ -11,9 +11,16 @@ if (result.error) {
 
 const fastify = fastifyCls({ logger: true });
 
-fastify.addHook('onSend', async (request, reply, payload) => {
-	reply.header('Access-Control-Allow-Origin', '*');
-	return payload;
+fastify.register(require('fastify-cors'), {
+	origin: (origin, cb) => {
+		if (/localhost/.test(origin)) {
+			//  Request from localhost will pass
+			cb(null, true);
+			return;
+		}
+
+		cb(null, false);
+	},
 });
 
 fastify.setNotFoundHandler(async (request, reply) => {
@@ -24,8 +31,6 @@ setupRoutes(fastify);
 
 fastify.register(require('fastify-static'), {
 	root: path.join(__dirname, 'dist'),
-
-	// prefix: '/public/', // optional: default '/'
 });
 
 const start = async () => {

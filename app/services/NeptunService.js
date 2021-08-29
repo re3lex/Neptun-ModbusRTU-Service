@@ -32,6 +32,35 @@ class NeptunService {
 		return res.map((r) => r.toJSON());
 	}
 
+	async writeAll(regData = []) {
+		for (let i = 0; i < regData.length; i++) {
+			const d = regData[i];
+			// eslint-disable-next-line no-await-in-loop
+			const res = await this.write(d);
+			if (res !== true) {
+				d.error = res;
+			}
+		}
+		const withErrors = regData
+			.filter((r) => r.error)
+			.reduce((obj, r) => {
+				obj[r.startReg] = r;
+				return obj;
+			}, {});
+		const allRegs = await this.readAll();
+
+		if (Object.keys(withErrors).length > 0) {
+			allRegs.forEach((r) => {
+				const regWithError = withErrors[r.startReg];
+				if (regWithError) {
+					r.error = regWithError.error;
+				}
+			});
+		}
+
+		return allRegs;
+	}
+
 	async write(data) {
 		const { startReg } = data;
 		if (startReg === undefined) {
@@ -43,10 +72,8 @@ class NeptunService {
 		}
 
 		const reg = regCls.fromJSON(data);
-		// eslint-disable-next-line no-console
-		console.log(reg);
-
-		// TODO
+		const res = await this.client.write(reg);
+		return res;
 	}
 }
 

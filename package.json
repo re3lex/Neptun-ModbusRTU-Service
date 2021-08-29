@@ -16,6 +16,7 @@
     "dotenv": "^10.0.0",
     "element-plus": "^1.0.2-beta.70",
     "fastify": "^3.20.1",
+    "fastify-cors": "^6.0.2",
     "fastify-static": "^4.2.3",
     "neptun-modbusrtu-registers": "git://github.com/re3lex/Neptun-ModbusRTU-Registers.git",
     "vue": "^3.0.0",

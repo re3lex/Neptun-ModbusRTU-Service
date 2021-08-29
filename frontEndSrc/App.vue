@@ -1,7 +1,8 @@
 <template>
 	<div>
+		<!--
 		<div id="nav">
-			<router-link to="/">
+					<router-link to="/">
 				Home
 			</router-link> |
 			<router-link to="/about">
@@ -9,22 +10,23 @@
 			</router-link> |
 			<router-link to="/registers">
 				Registers
-			</router-link>
+			</router-link> |
 		</div>
+	</div>
+	-->
 		<router-view />
 	</div>
 </template>
 
 <style lang="scss">
 #app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  //text-align: center;
+  font-family: Helvetica, Arial, sans-serif;
 
 }
 
 #nav {
   padding: 30px;
-text-align: center;
+	text-align: center;
 	a {
     font-weight: bold;
     color: #2c3e50;

@@ -1,4 +1,7 @@
 export default {
+	getAPIHost() {
+		return window.ENV === 'development' ? 'http://localhost:3000' : '';
+	},
 	isObject(object) {
 		return object != null && typeof object === 'object';
 	},
