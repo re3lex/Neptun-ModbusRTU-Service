@@ -7,7 +7,7 @@
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
-    "start": "node ./index.js"
+    "start": "cross-env NODE_ENV=development node ./index.js"
   },
   "author": "",
   "license": "ISC",
@@ -21,6 +21,8 @@
     "fastify-cors": "^6.0.2",
     "fastify-static": "^4.2.3",
     "neptun-modbusrtu-registers": "git://github.com/re3lex/Neptun-ModbusRTU-Registers.git",
+    "pino": "^7.0.0-rc.3",
+    "pino-pretty": "^6.0.0",
     "vue": "^3.0.0",
     "vue-router": "^4.0.0-0",
     "vuex": "^4.0.0-0"
@@ -35,6 +37,7 @@
     "@vue/eslint-config-airbnb": "^5.0.2",
     "babel-eslint": "^10.1.0",
     "babel-plugin-import": "^1.13.3",
+    "cross-env": "^7.0.3",
     "eslint": "^6.7.2",
     "eslint-plugin-import": "^2.20.2",
     "eslint-plugin-vue": "^7.0.0",

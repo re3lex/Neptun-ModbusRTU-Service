@@ -10,8 +10,13 @@ const result = dotenv.config();
 if (result.error) {
 	throw result.error;
 }
+const { getLogger } = require('./app/logger/logger');
 
-const fastify = fastifyCls({ logger: true });
+getLogger('default', 'info').info('Application start');
+
+const logger = getLogger('fastify', 'warn');
+
+const fastify = fastifyCls({ logger });
 
 fastify.register(require('fastify-cors'), {
 	origin: (origin, cb) => {
