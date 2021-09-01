@@ -1,6 +1,6 @@
-/* eslint-disable no-console */
 const MQTT = require('async-mqtt');
 const NeptunService = require('./NeptunService');
+const logger = require('../logger/logger').getLogger('MqttService');
 
 const deviceName = 'NeptunSmartProxy';
 const mqttDeviceCfg = {
@@ -12,34 +12,26 @@ const mqttDeviceCfg = {
 	manufacturer: 'Me',
 };
 
-const mqttRootTopic = `homeassistant/sensor/${deviceName}`;
+// const mqttRootTopic = `homeassistant/sensor/${deviceName}`;
 
-const availTopicName = `${mqttRootTopic}/availability`;
-const availTopicCfgName = `${availTopicName}/config`;
-const availTopicCfg = JSON.stringify({
-	name: `${deviceName}_availability`,
-	unique_id: `${deviceName}_availability`,
-	state_topic: availTopicName,
-	device: mqttDeviceCfg,
-});
+const getTopicDefinition = (topicName, device) => {
+	const root = `homeassistant/sensor/${device}`;
+	const name = `${root}/${topicName}`;
+	const cfgName = `${name}/config`;
+	const cfg = JSON.stringify({
+		name: `${device}_${topicName}`,
+		unique_id: `${device}_${topicName}`,
+		state_topic: topicName,
+		device: mqttDeviceCfg,
+	});
+	return { name, cfgName, cfg };
+};
 
-const bathHotWaterMeterTopicName = `${mqttRootTopic}/bathHotWaterMeter`;
-const bathHotWaterMeterTopicCfgName = `${bathHotWaterMeterTopicName}/config`;
-const bathHotWaterMeterTopicCfg = JSON.stringify({
-	name: `${deviceName}_bathHotWaterMeter`,
-	unique_id: `${deviceName}_bathHotWaterMeter`,
-	state_topic: bathHotWaterMeterTopicName,
-	device: mqttDeviceCfg,
-});
-
-const bathColdWaterMeterTopicName = `${mqttRootTopic}/bathColdWaterMeter`;
-const bathColdWaterMeterTopicCfgName = `${bathColdWaterMeterTopicName}/config`;
-const bathColdWaterMeterTopicCfg = JSON.stringify({
-	name: `${deviceName}_bathColdWaterMeter`,
-	unique_id: `${deviceName}_bathColdWaterMeter`,
-	state_topic: bathColdWaterMeterTopicName,
-	device: mqttDeviceCfg,
-});
+const availTopic = getTopicDefinition('availability', deviceName);
+const bathHotWaterMeterTopic = getTopicDefinition('bathHotWaterMeter', deviceName);
+const bathColdWaterMeterTopic = getTopicDefinition('bathColdWaterMeter', deviceName);
+const toiletHotWaterMeterTopic = getTopicDefinition('toiletHotWaterMeter', deviceName);
+const toiletColdWaterMeterTopic = getTopicDefinition('toiletColdWaterMeter', deviceName);
 
 class MqttService {
 	async getClient() {
@@ -50,7 +42,7 @@ class MqttService {
 
 			const options = {
 				will: {
-					topic: availTopicName,
+					topic: availTopic.name,
 					payload: 'offline',
 					qos: 2,
 					retain: true,
@@ -59,7 +51,7 @@ class MqttService {
 			try {
 				this.constructor.client = await MQTT.connectAsync(`tcp://${mqttIp}:1883`, options);
 			} catch (e) {
-				console.error('Unable to connect to the MQTT broker', e);
+				logger.error('Unable to connect to the MQTT broker', e);
 				return undefined;
 			}
 
@@ -67,22 +59,30 @@ class MqttService {
 
 			try {
 				await client.publish(
-					availTopicCfgName, availTopicCfg, { qos: 2, retain: true },
+					availTopic.cfgName, availTopic.cfg, { qos: 2, retain: true },
 				);
 
 				await client.publish(
-					bathHotWaterMeterTopicCfgName, bathHotWaterMeterTopicCfg, { qos: 1, retain: true },
+					bathHotWaterMeterTopic.cfgName, bathHotWaterMeterTopic.cfg, { qos: 1, retain: true },
 				);
 
 				await client.publish(
-					bathColdWaterMeterTopicCfgName, bathColdWaterMeterTopicCfg, { qos: 1, retain: true },
+					bathColdWaterMeterTopic.cfgName, bathColdWaterMeterTopic.cfg, { qos: 1, retain: true },
 				);
 
 				await client.publish(
-					availTopicName, 'online', { qos: 2, retain: true },
+					toiletHotWaterMeterTopic.cfgName, toiletHotWaterMeterTopic.cfg, { qos: 1, retain: true },
+				);
+
+				await client.publish(
+					toiletColdWaterMeterTopic.cfgName, toiletColdWaterMeterTopic.cfg, { qos: 1, retain: true },
+				);
+
+				await client.publish(
+					availTopic.name, 'online', { qos: 2, retain: true },
 				);
 			} catch (e) {
-				console.error('Unable to publish configuration after connect', e);
+				logger.error('Unable to publish configuration after connect', e);
 				return undefined;
 			}
 		} else if (!this.constructor.client.connected) {
@@ -94,7 +94,7 @@ class MqttService {
 	async sendMqttMessages() {
 		const client = await this.getClient();
 		if (!client) {
-			console.error('Client is not returned. Check errors above.');
+			logger.error('Client is not returned. Check errors above.');
 			return;
 		}
 
@@ -106,14 +106,22 @@ class MqttService {
 
 		try {
 			await client.publish(
-				bathHotWaterMeterTopicName, `${bathHotReg.data.value / 1000}`, { qos: 1, retain: true },
+				bathHotWaterMeterTopic.name, `${bathHotReg.data.value / 1000}`, { qos: 1, retain: true },
 			);
 
 			await client.publish(
-				bathColdWaterMeterTopicName, `${bathColdReg.data.value / 1000}`, { qos: 1, retain: true },
+				bathColdWaterMeterTopic.name, `${bathColdReg.data.value / 1000}`, { qos: 1, retain: true },
+			);
+
+			await client.publish(
+				toiletHotWaterMeterTopic.name, `${toiletHotReg.data.value / 1000}`, { qos: 1, retain: true },
+			);
+
+			await client.publish(
+				toiletColdWaterMeterTopic.name, `${toiletColdReg.data.value / 1000}`, { qos: 1, retain: true },
 			);
 		} catch (e) {
-			console.error('Unable to publish the MQTT data', e);
+			logger.error('Unable to publish the MQTT data', e);
 		}
 	}
 }
