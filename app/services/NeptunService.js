@@ -1,8 +1,10 @@
 const NeptunClient = require('neptun-modbusrtu-registers/src/client/NeptunClient');
+const logger = require('../logger/logger').getLogger('NeptunService');
 
 class NeptunService {
 	constructor() {
 		if (!this.constructor.client) {
+			logger.debug('Setup NeptunCLient start');
 			const {
 				NEPTUN_IP: neptunIp,
 				NEPTUN_ID: neptunId,
@@ -12,6 +14,7 @@ class NeptunService {
 				ip: neptunIp,
 				id: neptunId,
 			});
+			logger.debug('Setup NeptunCLient end');
 		}
 
 		this.client = this.constructor.client;
