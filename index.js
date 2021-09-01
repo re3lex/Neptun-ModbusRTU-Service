@@ -1,7 +1,9 @@
 const dotenv = require('dotenv');
 const path = require('path');
 const fastifyCls = require('fastify');
+
 const { setupRoutes } = require('./app/routes/routes');
+const { setupCronJobs } = require('./app/cron/cron');
 
 const result = dotenv.config();
 
@@ -41,5 +43,7 @@ const start = async () => {
 		process.exit(1);
 	}
 };
+
+setupCronJobs();
 
 start();
