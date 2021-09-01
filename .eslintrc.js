@@ -42,6 +42,7 @@ module.exports = {
 			'bare-block',
 		],
 		'class-methods-use-this': 'off',
+		'import/no-extraneous-dependencies': 'off',
 		'radix': 'off',
 		'no-tabs': 'off',
 		'max-len': ['warn', { "code": 130 }],
