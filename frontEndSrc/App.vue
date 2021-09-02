@@ -19,9 +19,14 @@
 </template>
 
 <style lang="scss">
+html, body {
+  margin:0px;
+  height:100%;
+}
+
 #app {
   font-family: Helvetica, Arial, sans-serif;
-
+	height:100%;
 }
 
 #nav {

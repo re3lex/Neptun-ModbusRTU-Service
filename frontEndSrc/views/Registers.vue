@@ -2,6 +2,7 @@
 	<div class="registers-container">
 		<ElContainer
 			direction="vertical"
+			style="height:100%;"
 		>
 			<ElHeader>
 				<ElMenu
@@ -28,22 +29,11 @@
 					<ElMenuItem index="counterConfigsRegs">
 						<i class="header-icon el-icon-s-tools"></i> Water conter configuration
 					</ElMenuItem>
-
-					<ElTooltip content="Save">
-						<ElButton
-							type="danger"
-							class="save-button"
-							icon="el-icon-edit-outline"
-							:disabled="!hasChangedRegisters"
-							@click="$store.dispatch('saveRegisters')"
-							circle
-						/>
-					</ElTooltip>
 				</ElMenu>
 			</ElHeader>
 
-			<ElContainer>
-				<ElMain>
+			<ElContainer style="height:100%;">
+				<ElMain style="height:100%;">
 					<ElAlert
 						title="Error!"
 						type="error"
@@ -59,6 +49,18 @@
 							v-model:reg="getSelectedRegistersArray()[index]"
 							:class="{'updated': reg.updated}"
 						/>
+					</div>
+					<div class="fab">
+						<ElTooltip content="Save">
+							<ElButton
+								type="danger"
+								class="save-button"
+								icon="el-icon-edit-outline"
+								:disabled="!hasChangedRegisters"
+								@click="$store.dispatch('saveRegisters')"
+								circle
+							/>
+						</ElTooltip>
 					</div>
 				</ElMain>
 			</ElContainer>
@@ -189,6 +191,7 @@ export default {
 </script>
 <style lang="scss">
 .registers-container {
+	height:100vh;
 	.registers {
 		display: flex;
 		flex-wrap: wrap;
@@ -212,16 +215,6 @@ export default {
   .el-header{
 		padding: 0;
 		background-color: #545c64;
-		display: flex;
-
-		.main-menu {
-			flex-grow: 1;
-		}
-		.save-button {
-			position: absolute;
-			right: 10px;
-			top: 10px;
-		}
   }
 
   .el-main {
@@ -231,5 +224,15 @@ export default {
   body > .el-container {
     margin-bottom: 40px;
   }
+	.fab {
+		position: fixed;
+		right: 30px;
+		bottom: 30px;
+		button {
+			-webkit-box-shadow: 4px 4px 16px -2px rgba(34, 60, 80, 0.91);
+			-moz-box-shadow: 4px 4px 16px -2px rgba(34, 60, 80, 0.91);
+			box-shadow: 4px 4px 16px -2px rgba(34, 60, 80, 0.91);
+		}
+	}
 }
 </style>
