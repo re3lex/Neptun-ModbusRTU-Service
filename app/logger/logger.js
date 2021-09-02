@@ -1,3 +1,10 @@
+const { existsSync, mkdirSync } = require('fs');
+
+const logFolder = `${process.cwd()}/logs`;
+if (!existsSync(logFolder)) {
+	mkdirSync(logFolder);
+}
+
 const defaultLevel = process.env.NODE_ENV === 'development' ? 'debug' : 'info';
 
 const targets = [{
@@ -7,7 +14,7 @@ const targets = [{
 		translateTime: 'SYS:standard',
 		colorize: false,
 		ignore: 'pid,hostname',
-		destination: `${process.cwd()}/logs/app.log`,
+		destination: `${logFolder}/app.log`,
 	},
 }];
 
