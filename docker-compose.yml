@@ -7,5 +7,7 @@ services:
     restart: always
     ports:
       - "7700:3000"
+    volumes:                     
+      - ${PWD}/logs:/factorio
     command:
-      "npm run start"
+      "node ./index.js"
