@@ -51,7 +51,8 @@ class MqttService {
 			try {
 				this.constructor.client = await MQTT.connectAsync(`tcp://${mqttIp}:1883`, options);
 			} catch (e) {
-				logger.error('Unable to connect to the MQTT broker', e);
+				logger.error('Unable to connect to the MQTT broker');
+				logger.error(e);
 				return undefined;
 			}
 
@@ -82,7 +83,8 @@ class MqttService {
 					availTopic.name, 'online', { qos: 2, retain: true },
 				);
 			} catch (e) {
-				logger.error('Unable to publish configuration after connect', e);
+				logger.error('Unable to publish configuration after connect');
+				logger.error(e);
 				return undefined;
 			}
 		} else if (!this.constructor.client.connected) {
@@ -121,7 +123,8 @@ class MqttService {
 				toiletColdWaterMeterTopic.name, `${toiletColdReg.data.value / 1000}`, { qos: 1, retain: true },
 			);
 		} catch (e) {
-			logger.error('Unable to publish the MQTT data', e);
+			logger.error('Unable to publish the MQTT data');
+			logger.error(e);
 		}
 	}
 }
