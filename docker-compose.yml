@@ -8,6 +8,6 @@ services:
     ports:
       - "7700:3000"
     volumes:                     
-      - ${PWD}/logs:/factorio
+      - ${PWD}/logs:/usr/src/app/logs
     command:
       "node ./index.js"
