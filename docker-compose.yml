@@ -7,7 +7,8 @@ services:
     restart: always
     ports:
       - "7700:3000"
-    volumes:                     
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
       - ${PWD}/logs:/usr/src/app/logs
     command:
       "node ./index.js"
