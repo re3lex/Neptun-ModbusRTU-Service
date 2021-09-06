@@ -8,7 +8,7 @@ const setupCronJobs = () => {
 		const mqttService = new MqttService();
 		await mqttService.sendMqttMessages();
 		getLogger('MqttService Cron').debug('end');
-	}));
+	}), null, false, undefined, undefined, true);
 
 	job.start();
 };
