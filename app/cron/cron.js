@@ -20,6 +20,7 @@ const setupCronJobs = () => {
 		await service.sendData();
 		getLogger('DataService Cron').debug('end');
 	}));
+
 	sendDataJob.start();
 };
 
