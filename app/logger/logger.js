@@ -16,19 +16,16 @@ const targets = [{
 		ignore: 'pid,hostname',
 		destination: `${logFolder}/app.log`,
 	},
+},
+{
+	level: process.env.NODE_ENV === 'development' ? defaultLevel : 'error',
+	target: '#pino/pretty',
+	options: {
+		translateTime: 'SYS:standard',
+		colorize: true,
+		ignore: 'pid,hostname',
+	},
 }];
-
-if (process.env.NODE_ENV === 'development') {
-	targets.push({
-		level: defaultLevel,
-		target: '#pino/pretty',
-		options: {
-			translateTime: 'SYS:standard',
-			colorize: true,
-			ignore: 'pid,hostname',
-		},
-	});
-}
 
 const pino = require('pino');
 
