@@ -74,10 +74,6 @@ import {
 	ElContainer,
 
 	ElMenu,
-	ElMenuItem,
-
-	ElHeader,
-	ElMain,
 
 	ElButton,
 	ElTooltip,
@@ -85,8 +81,12 @@ import {
 	ElAlert,
 
 } from 'element-plus';
-
 import RegisterCard from '@/components/RegisterCard.vue';
+
+const ElHeader = ElContainer.Header;
+const ElMain = ElContainer.Main;
+
+const ElMenuItem = ElMenu.MenuItem;
 
 export default {
 	components: {

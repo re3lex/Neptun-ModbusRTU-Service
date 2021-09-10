@@ -4,12 +4,13 @@ import { h } from 'vue';
 import {
 	ElCard,
 	ElForm,
-	ElFormItem,
 	ElSelect,
-	ElOption,
 	ElInputNumber,
 	ElSwitch,
 } from 'element-plus';
+
+const ElFormItem = ElForm.FormItem;
+const ElOption = ElSelect.Option;
 
 export default {
 	props: {
