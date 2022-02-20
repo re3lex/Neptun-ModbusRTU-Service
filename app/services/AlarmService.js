@@ -35,7 +35,7 @@ class AlarmService {
 		}
 		if (lastSentWirelessAlert !== alert) {
 			lastSentWirelessAlert = alert;
-			const msg = `Wireless sensor #1 lowBat: ${alert}`;
+			const msg = `Wireless sensor #1 alert: ${alert}`;
 			await this.sendTelegram(msg);
 			alerts.push(msg);
 		}
