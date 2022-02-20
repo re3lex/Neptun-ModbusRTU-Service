@@ -11,38 +11,55 @@ let lastSecondGroupAlert = false;
 class AlarmService {
 	async watchAlert() {
 		const nService = new NeptunService();
-		const { firstGroupAlert, secondGroupAlert } = await nService.readRegister(0);
-		const { alert, missed, lowBat } = await nService.readRegister(57);
+		const zeroReg = await nService.readRegister(0);
+
+		const reg57 = await nService.readRegister(57);
+
 		const alerts = [];
-		if (lastFirstGroupAlert !== firstGroupAlert) {
-			lastFirstGroupAlert = firstGroupAlert;
-			const msg = firstGroupAlert ? '`Bath` *leak* alert!!!' : 'Bath leak stopped. Why?..';
-			await this.sendTelegram(msg);
-			alerts.push(msg);
-		}
-		if (lastSecondGroupAlert !== secondGroupAlert) {
-			lastSecondGroupAlert = secondGroupAlert;
-			const msg = secondGroupAlert ? '`Toilet` *leak* alert!!!' : 'Toilet leak stopped. Why?..';
-			await this.sendTelegram(msg);
+		if (zeroReg) {
+			const { firstGroupAlert, secondGroupAlert } = zeroReg;
+			if (firstGroupAlert !== undefined && lastFirstGroupAlert !== firstGroupAlert) {
+				lastFirstGroupAlert = firstGroupAlert;
+				const msg = firstGroupAlert ? '`Bath` *leak* alert!!!' : 'Bath leak stopped. Why?..';
+				await this.sendTelegram(msg);
+				alerts.push(msg);
+			}
+			if (secondGroupAlert !== undefined && lastSecondGroupAlert !== secondGroupAlert) {
+				lastSecondGroupAlert = secondGroupAlert;
+				const msg = secondGroupAlert ? '`Toilet` *leak* alert!!!' : 'Toilet leak stopped. Why?..';
+				await this.sendTelegram(msg);
+				alerts.push(msg);
+			}
+		} else {
+			const msg = 'No response after reading 0000 register';
+			logger.error(msg);
 			alerts.push(msg);
 		}
 
-		if (lastSentLowbat !== lowBat) {
-			lastSentLowbat = lowBat;
-			const msg = `Wireless sensor #1 lowBat: ${lowBat}`;
-			await this.sendTelegram(msg);
-			alerts.push(msg);
-		}
-		if (lastSentWirelessAlert !== alert) {
-			lastSentWirelessAlert = alert;
-			const msg = `Wireless sensor #1 alert: ${alert}`;
-			await this.sendTelegram(msg);
-			alerts.push(msg);
-		}
-		if (lastSentWirelessMissed !== missed) {
-			lastSentWirelessMissed = missed;
-			const msg = `Wireless sensor #1 missed: ${missed}`;
-			await this.sendTelegram(msg);
+		if (reg57) {
+			const { alert, missed, lowBat } = reg57;
+
+			if (lowBat !== undefined && lastSentLowbat !== lowBat) {
+				lastSentLowbat = lowBat;
+				const msg = `Wireless sensor #1 lowBat: ${lowBat}`;
+				await this.sendTelegram(msg);
+				alerts.push(msg);
+			}
+			if (alert !== undefined && lastSentWirelessAlert !== alert) {
+				lastSentWirelessAlert = alert;
+				const msg = `Wireless sensor #1 alert: ${alert}`;
+				await this.sendTelegram(msg);
+				alerts.push(msg);
+			}
+			if (missed !== undefined && lastSentWirelessMissed !== missed) {
+				lastSentWirelessMissed = missed;
+				const msg = `Wireless sensor #1 missed: ${missed}`;
+				await this.sendTelegram(msg);
+				alerts.push(msg);
+			}
+		} else {
+			const msg = 'No response after reading 0057 register';
+			logger.error(msg);
 			alerts.push(msg);
 		}
 
