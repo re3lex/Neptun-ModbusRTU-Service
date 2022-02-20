@@ -11,13 +11,11 @@ let lastSecondGroupAlert = false;
 class AlarmService {
 	async watchAlert() {
 		const nService = new NeptunService();
-		const zeroReg = await nService.readRegister(0);
-
-		const reg57 = await nService.readRegister(57);
+		const { data: reg0000Data } = await nService.readRegister(0);
 
 		const alerts = [];
-		if (zeroReg) {
-			const { firstGroupAlert, secondGroupAlert } = zeroReg;
+		if (reg0000Data) {
+			const { firstGroupAlert, secondGroupAlert } = reg0000Data;
 			if (firstGroupAlert !== undefined && lastFirstGroupAlert !== firstGroupAlert) {
 				lastFirstGroupAlert = firstGroupAlert;
 				const msg = firstGroupAlert ? '`Bath` *leak* alert!!!' : 'Bath leak stopped. Why?..';
@@ -36,8 +34,9 @@ class AlarmService {
 			alerts.push(msg);
 		}
 
-		if (reg57) {
-			const { alert, missed, lowBat } = reg57;
+		const { data: reg0057Data } = await nService.readRegister(57);
+		if (reg0057Data) {
+			const { alert, missed, lowBat } = reg0057Data;
 
 			if (lowBat !== undefined && lastSentLowbat !== lowBat) {
 				lastSentLowbat = lowBat;
