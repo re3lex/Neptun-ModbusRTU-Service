@@ -18,7 +18,7 @@ const setupRoutes = (fastify) => {
 
 	fastify.get('/api/telegram', async (request, reply) => {
 		const alertService = new AlarmService();
-		const res = await alertService.sendAlert();
+		const res = await alertService.watchAlert();
 		return res;
 	});
 

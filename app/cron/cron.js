@@ -1,6 +1,7 @@
 const { CronJob } = require('cron');
 const MqttService = require('../services/MqttService');
 const DataService = require('../services/DataService');
+const AlarmService = require('../services/AlarmService');
 const { getLogger } = require('../logger/logger');
 
 const setupCronJobs = () => {
@@ -22,6 +23,15 @@ const setupCronJobs = () => {
 	}));
 
 	sendDataJob.start();
+
+	const alertWatcherJob = new CronJob('* * * * * *', (async () => {
+		getLogger('AlarmService Cron').debug('start');
+		const service = new AlarmService();
+		await service.watchAlert();
+		getLogger('AlarmService Cron').debug('end');
+	}));
+
+	alertWatcherJob.start();
 };
 
 module.exports = {
