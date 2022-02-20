@@ -13,30 +13,43 @@ class AlarmService {
 		const nService = new NeptunService();
 		const { firstGroupAlert, secondGroupAlert } = await nService.readRegister(0);
 		const { alert, missed, lowBat } = await nService.readRegister(57);
-
+		const alerts = [];
 		if (lastFirstGroupAlert !== firstGroupAlert) {
 			lastFirstGroupAlert = firstGroupAlert;
 			const msg = firstGroupAlert ? '`Bath` *leak* alert!!!' : 'Bath leak stopped. Why?..';
 			await this.sendTelegram(msg);
+			alerts.push(msg);
 		}
 		if (lastSecondGroupAlert !== secondGroupAlert) {
 			lastSecondGroupAlert = secondGroupAlert;
 			const msg = secondGroupAlert ? '`Toilet` *leak* alert!!!' : 'Toilet leak stopped. Why?..';
 			await this.sendTelegram(msg);
+			alerts.push(msg);
 		}
 
 		if (lastSentLowbat !== lowBat) {
 			lastSentLowbat = lowBat;
-			await this.sendTelegram(`Wireless sensor #1 lowBat: ${lowBat}`);
+			const msg = `Wireless sensor #1 lowBat: ${lowBat}`;
+			await this.sendTelegram(msg);
+			alerts.push(msg);
 		}
 		if (lastSentWirelessAlert !== alert) {
 			lastSentWirelessAlert = alert;
-			await this.sendTelegram(`Wireless sensor #1 lowBat: ${alert}`);
+			const msg = `Wireless sensor #1 lowBat: ${alert}`;
+			await this.sendTelegram(msg);
+			alerts.push(msg);
 		}
 		if (lastSentWirelessMissed !== missed) {
 			lastSentWirelessMissed = missed;
-			await this.sendTelegram(`Wireless sensor #1 missed: ${missed}`);
+			const msg = `Wireless sensor #1 missed: ${missed}`;
+			await this.sendTelegram(msg);
+			alerts.push(msg);
 		}
+
+		if (alerts.length === 0) {
+			alerts.push('No alerts at this moment');
+		}
+		return new Promise((resolve) => resolve(alerts.join('\n')));
 	}
 
 	async sendTelegram(msg) {
