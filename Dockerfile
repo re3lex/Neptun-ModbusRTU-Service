@@ -45,6 +45,7 @@ FROM node:14-alpine
 WORKDIR /usr/src/app
 ENV NODE_ENV=production
 
+RUN apk add curl
 
 COPY --from=build_vuejs /usr/src/app/dist /usr/src/app/dist
 COPY --from=setup_node_modules /usr/src/app /usr/src/app

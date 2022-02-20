@@ -1,8 +1,12 @@
 const { exec } = require('child_process');
 const logger = require('../logger/logger').getLogger('AlarmService');
+const NeptunService = require('./NeptunService');
 
 class AlarmService {
-	sendAlert() {
+	async sendAlert() {
+		const nService = new NeptunService();
+		const wireSensor = await nService.readRegister(0);
+		const wirelesSensor = await nService.readRegister(57);
 		const msg = 'Qwe `qwe` qwe';
 
 		return new Promise((resolve, reject) => {
@@ -18,7 +22,7 @@ class AlarmService {
 					return;
 				}
 				logger.info(`stdout: ${stdout}`);
-				resolve(stdout);
+				resolve(wirelesSensor);
 			});
 		});
 	}
