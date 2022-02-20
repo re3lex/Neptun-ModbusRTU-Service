@@ -14,6 +14,18 @@ const mqttDeviceCfg = {
 
 // const mqttRootTopic = `homeassistant/sensor/${deviceName}`;
 
+const getAvailTopicDefinition = (device) => {
+	const root = `homeassistant/sensor/${device}`;
+	const name = `${root}/availability`;
+	const cfgName = `${name}/config`;
+	const cfg = JSON.stringify({
+		name: `${device}_availability`,
+		unique_id: `${device}_availability`,
+		state_topic: `${root}/availability`,
+		device: mqttDeviceCfg,
+	});
+	return { name, cfgName, cfg };
+};
 const getTopicDefinition = (topicName, device) => {
 	const root = `homeassistant/sensor/${device}`;
 	const name = `${root}/${topicName}`;
@@ -21,7 +33,8 @@ const getTopicDefinition = (topicName, device) => {
 	const cfg = JSON.stringify({
 		name: `${device}_${topicName}`,
 		unique_id: `${device}_${topicName}`,
-		state_topic: topicName,
+		state_topic: `${root}/${topicName}`,
+		availability_topic: `${root}/availability`,
 		device: mqttDeviceCfg,
 		unit_of_measurement: 'm³',
 		device_class: 'gas',
@@ -29,7 +42,7 @@ const getTopicDefinition = (topicName, device) => {
 	return { name, cfgName, cfg };
 };
 
-const availTopic = getTopicDefinition('availability', deviceName);
+const availTopic = getAvailTopicDefinition(deviceName);
 const bathHotWaterMeterTopic = getTopicDefinition('bathHotWaterMeter', deviceName);
 const bathColdWaterMeterTopic = getTopicDefinition('bathColdWaterMeter', deviceName);
 const toiletHotWaterMeterTopic = getTopicDefinition('toiletHotWaterMeter', deviceName);
