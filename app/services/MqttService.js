@@ -23,6 +23,8 @@ const getTopicDefinition = (topicName, device) => {
 		unique_id: `${device}_${topicName}`,
 		state_topic: topicName,
 		device: mqttDeviceCfg,
+		unit_of_measurement: 'm³',
+		device_class: 'gas',
 	});
 	return { name, cfgName, cfg };
 };
