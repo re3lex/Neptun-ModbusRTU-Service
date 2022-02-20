@@ -10,6 +10,6 @@ services:
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - ${PWD}/logs:/usr/src/app/logs
-      - /opt/telegram:/volume1/bin/telegram:ro
+      - /volume1/bin/telegram:/opt/telegram:ro
     command:
       "node ./index.js"
