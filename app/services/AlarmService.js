@@ -53,6 +53,7 @@ class AlarmService {
 	}
 
 	async sendTelegram(msg) {
+		logger.info(`call sendTelegram with msg: ${msg}`);
 		return new Promise((resolve, reject) => {
 			exec(`/opt/telegram/send.sh '${msg}'`, (error, stdout, stderr) => {
 				if (error) {
