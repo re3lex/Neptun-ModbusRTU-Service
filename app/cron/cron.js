@@ -24,7 +24,7 @@ const setupCronJobs = () => {
 
 	sendDataJob.start();
 
-	const alertWatcherJob = new CronJob('* * * * * *', (async () => {
+	const alertWatcherJob = new CronJob('15 * * * * *', (async () => {
 		getLogger('AlarmService Cron').debug('start');
 		const service = new AlarmService();
 		await service.watchAlert();
