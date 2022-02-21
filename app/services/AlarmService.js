@@ -11,7 +11,14 @@ let lastSecondGroupAlert = false;
 class AlarmService {
 	async watchAlert() {
 		const nService = new NeptunService();
-		const { data: reg0000Data } = await nService.readRegister(0);
+
+		let reg0000Data;
+		try {
+			reg0000Data = await nService.readRegister(0).data;
+		} catch (e) {
+			logger.error('Unable to read register 0000');
+			logger.error(e);
+		}
 
 		const alerts = [];
 		if (reg0000Data) {
@@ -34,7 +41,14 @@ class AlarmService {
 			alerts.push(msg);
 		}
 
-		const { data: reg0057Data } = await nService.readRegister(57);
+		let reg0057Data;
+		try {
+			reg0057Data = await nService.readRegister(57).data;
+		} catch (e) {
+			logger.error('Unable to read register 0057');
+			logger.error(e);
+		}
+
 		if (reg0057Data) {
 			const { alert, missed, lowBat } = reg0057Data;
 
