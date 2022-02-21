@@ -14,10 +14,11 @@ class AlarmService {
 
 		let reg0000Data;
 		try {
-			reg0000Data = await nService.readRegister(0).data;
+			const { data } = await nService.readRegister(0);
+			reg0000Data = data;
 		} catch (e) {
 			logger.error('Unable to read register 0000');
-			console.error(e);
+			logger.error(e);
 		}
 
 		const alerts = [];
@@ -43,10 +44,11 @@ class AlarmService {
 
 		let reg0057Data;
 		try {
-			reg0057Data = await nService.readRegister(57).data;
+			const { data } = await nService.readRegister(57);
+			reg0057Data = data;
 		} catch (e) {
 			logger.error('Unable to read register 0057');
-			console.error(e);
+			logger.error(e);
 		}
 
 		if (reg0057Data) {

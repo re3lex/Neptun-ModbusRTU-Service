@@ -124,25 +124,25 @@ class MqttService {
 			bathHotReg = await neptunService.readRegister(115);
 		} catch (e) {
 			logger.error('Unable to read register 0115');
-			console.error(e);
+			logger.error(e);
 		}
 		try {
 			bathColdReg = await neptunService.readRegister(117);
 		} catch (e) {
 			logger.error('Unable to read register 0117');
-			console.error(e);
+			logger.error(e);
 		}
 		try {
 			toiletHotReg = await neptunService.readRegister(119);
 		} catch (e) {
 			logger.error('Unable to read register 0119');
-			console.error(e);
+			logger.error(e);
 		}
 		try {
 			toiletColdReg = await neptunService.readRegister(121);
 		} catch (e) {
 			logger.error('Unable to read register 0121');
-			console.error(e);
+			logger.error(e);
 		}
 
 		if (bathHotReg && bathColdReg && toiletHotReg && toiletColdReg) {
@@ -164,7 +164,7 @@ class MqttService {
 				);
 			} catch (e) {
 				logger.error('Unable to publish the MQTT data');
-				console.error(e);
+				logger.error(e);
 			}
 		}
 	}
