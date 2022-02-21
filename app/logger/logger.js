@@ -7,6 +7,9 @@ if (!existsSync(logFolder)) {
 
 const defaultLevel = process.env.NODE_ENV === 'development' ? 'debug' : 'info';
 
+const date = new Date();
+const ts = `${date.toISOString().substr(0, 10)}T${date.toLocaleTimeString()}`.replace(/[-,:]/gi, '');
+
 const targets = [{
 	level: defaultLevel,
 	target: '#pino/pretty',
@@ -14,7 +17,7 @@ const targets = [{
 		translateTime: 'SYS:standard',
 		colorize: false,
 		ignore: 'pid,hostname',
-		destination: `${logFolder}/app.log`,
+		destination: `${logFolder}/app_${ts}.log`,
 	},
 },
 {
