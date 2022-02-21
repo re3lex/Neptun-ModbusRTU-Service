@@ -27,6 +27,31 @@ const targets = [{
 	},
 }];
 
+const wrap = (logger) => {
+	const { error, child } = logger;
+	function errorRearranger(...args) {
+		if (typeof args[0] === 'string' && args.length > 1) {
+			for (let i = 1; i < args.length; i++) {
+				const arg = args[i];
+				if (arg instanceof Error) {
+					const [err] = args.splice(i, 1);
+					args.unshift(err);
+				}
+			}
+		}
+		return error.apply(this, args);
+	}
+	function childModifier(...args) {
+		const c = child.apply(this, args);
+		c.error = errorRearranger;
+		c.child = childModifier;
+		return c;
+	}
+	logger.error = errorRearranger;
+	logger.child = childModifier;
+	return logger;
+};
+
 const pino = require('pino');
 
 const transport = pino.transport({
@@ -47,6 +72,6 @@ process.on('unhandledRejection', pino.final(logger, (err, finalLogger) => {
 
 module.exports = {
 	getLogger(name = 'default', level = defaultLevel) {
-		return logger.child({ name }, { level });
+		return wrap(logger.child({ name }, { level }));
 	},
 };
