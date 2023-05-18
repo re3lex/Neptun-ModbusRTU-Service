@@ -19,7 +19,7 @@
     "fastify": "^3.20.1",
     "fastify-cors": "^6.0.2",
     "fastify-static": "^4.2.3",
-    "neptun-modbusrtu-registers": "git://github.com/re3lex/Neptun-ModbusRTU-Registers.git",
+    "neptun-modbusrtu-registers": "re3lex/Neptun-ModbusRTU-Registers#master",
     "pino": "7.0.0-rc.3",
     "pino-pretty": "^6.0.0"
   },
