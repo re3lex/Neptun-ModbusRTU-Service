@@ -27,8 +27,9 @@ class DataService {
 	}
 
 	sendGetCall(type, room, value) {
-		logger.debug(`Making a call for ${type}/${room}/${value}`);
-		http.get(`http://nas:7701/api/waterReadings/write/${type}/${room}/${value}`, (resp) => {
+		const url = `http://192.168.1.123:7701/api/waterReadings/write/${type}/${room}/${value}`;
+		logger.debug(`Making a call for ${type}/${room}/${value}: ${url}`);
+		http.get(url, (resp) => {
 			let data = '';
 
 			// A chunk of data has been received.
